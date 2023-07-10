@@ -19,9 +19,14 @@ router.get('/user', auth, async(req, res) => {
 
 /*router.get('/post', auth, async(req, res) => {
     try {
-        if (req.user)
+        if (req.user.locked === "false") {
+            const data = await post.find({id: req.user._id});
+            res.status(200).send(data);
+        } else {
+            res.status(404).send("impo");
+        }
     } catch(error) {
-
+        console.log("error");
     }
 })*/
 

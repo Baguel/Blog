@@ -32,6 +32,19 @@ router.get('/post', auth, async(req, res) => {
     }
 })
 
+router.get('/post/user', auth, async(req, res) => {
+    try {
+        if (req.user.locked === "false") {
+            const data = await post.find({id: req.user._id});
+            res.status(200).send(data);
+        } else {
+            res.status(404).send("impo");
+        }
+    } catch(error) {
+        console.log("error");
+    }
+})
+
 router.put('/:id', auth, async (req, res) => {
     const id = req.params.id;
     try {
@@ -40,9 +53,11 @@ router.put('/:id', auth, async (req, res) => {
         } else {
             const postId = id.toString();
             const postfind = await post.findById({_id : new ObjectId(postId)});
-            if (req.user.locked === "false") {
-            const update = await post.findByIdAndUpdate({_id : new ObjectId(postId)}, {status: req.params.status}).then(data => {
-                res.status(200).send('status changé avec success');
+            if (!postfind && req.user.locked === "false") {
+                const status = req.body.status;
+                console.log(status);
+                const update = await post.findByIdAndUpdate({_id : new ObjectId(postId)}, {status: status}, {new: true}).then(data => {
+                    res.status(200).send('status changé avec success');
             })
             .catch(error => {
                 console.log(error);
@@ -55,35 +70,6 @@ router.put('/:id', auth, async (req, res) => {
         console.log(error);
     }
 })
-
-
-/*router.get('/user', auth, async(req, res) => {
-    try {
-        const data = await user.find({});
-        res.status(200).send(data);
-    } catch(error) {
-        res.status(400).send("il y a rien");
-    }
-})
-
-router.get('/:id', auth, async (req, res) => {
-    const id = req.params.id;
-    try {
-        if (!id) {
-            res.status(401).send("id est requis");
-        } else {
-            const userId = id.toString();
-            const userfind = await user.findOne({_id: new ObjectId(userId)});
-            if (!userfind) {
-                res.status(404).send("L'utilisateur n'a pas été trouvé.");
-            } else {
-                res.status(200).json(userfind);
-            }
-        }
-    } catch (error) {
-        console.log(error);
-    }
-})*/
 
 /*router.delete('/:id', auth, async (req, res) => {
     const id = req.params.id;
