@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
+//Pour enregistrer un admin
 router.post("/register", async (req, res) => {
     const {surname, firstname, username, email, password} = req.body;
     let hash = await bcrypt.hash(password, 10);
@@ -22,6 +23,7 @@ router.post("/register", async (req, res) => {
     }
 })
 
+//Connecter un admin
 router.post('/login', async (req, res) => {
     const {email, password} = req.body;
     try {
@@ -41,6 +43,7 @@ router.post('/login', async (req, res) => {
     }
 })
 
+//Voir tout les admins
 router.get('/admin', async(req, res) => {
     try {
         const data = admin.find({});
@@ -50,6 +53,7 @@ router.get('/admin', async(req, res) => {
     }
 })
 
+//Mettre a jour les infos du compte plus précisement le mot de passe
 router.put('/:id', async (req, res) => {
     const id = req.params.id;
     try {

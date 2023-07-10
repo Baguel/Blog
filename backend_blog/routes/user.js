@@ -8,6 +8,7 @@ const auth = require('../middleware/authentification.js');
 const { ObjectId } = require('bson');
 const mongoose = require('mongoose');
 
+//voir les infos des utilisateurs
 router.get('/user', auth, async(req, res) => {
     try {
         const data = await user.find({});
@@ -17,19 +18,7 @@ router.get('/user', auth, async(req, res) => {
     }
 })
 
-/*router.get('/post', auth, async(req, res) => {
-    try {
-        if (req.user.locked === "false") {
-            const data = await post.find({id: req.user._id});
-            res.status(200).send(data);
-        } else {
-            res.status(404).send("impo");
-        }
-    } catch(error) {
-        console.log("error");
-    }
-})*/
-
+//voir les infos de l'utilisateur connecté
 router.get('/:id', auth, async (req, res) => {
     const id = req.params.id;
     try {
@@ -49,6 +38,7 @@ router.get('/:id', auth, async (req, res) => {
     }
 })
 
+//mettre a jour les infos de l'utilisateur connecter
 router.put('/:id', auth, async (req, res) => {
     const id = req.params.id;
     try {
@@ -57,7 +47,7 @@ router.put('/:id', auth, async (req, res) => {
         } else {
             const userId = id.toString();
             const userfind = await user.findById({_id : new ObjectId(userId)});
-            if (userfind.locked === "false") { 
+            if (userfind && userfind.locked === "false") { 
             const password = req.body.password;
             let hash = await bcrypt.hash(password, 10);
             const update = await user.findByIdAndUpdate({_id : new ObjectId(userId)}, {password: hash}).then(data => {
@@ -75,6 +65,7 @@ router.put('/:id', auth, async (req, res) => {
     }
 })
 
+//supprimer le compte de l'utilisateur connecter
 router.delete('/:id', auth, async (req, res) => {
     const id = req.params.id;
     if (!id) {

@@ -6,7 +6,7 @@ const auth = require('../middleware/authentification.js');
 const { ObjectId } = require('bson');
 const mongoose = require('mongoose');
 
-
+//Créer un post
 router.post("/post", auth, async (req, res) => {
     const {rubrique, title, description} = req.body;
     try {
@@ -23,6 +23,7 @@ router.post("/post", auth, async (req, res) => {
     }
 })
 
+//Voir tout les posts
 router.get('/post', auth, async(req, res) => {
     try {
         const data = await post.find({});
@@ -32,6 +33,7 @@ router.get('/post', auth, async(req, res) => {
     }
 })
 
+//Voir les posts propres a l'utilisateur connecter
 router.get('/post/user', auth, async(req, res) => {
     try {
         if (req.user.locked === "false") {
@@ -45,7 +47,7 @@ router.get('/post/user', auth, async(req, res) => {
     }
 })
 
-router.put('/:id', auth, async (req, res) => {
+/*router.put('/:id', auth, async (req, res) => {
     const id = req.params.id;
     try {
         if (!id) {
@@ -69,7 +71,7 @@ router.put('/:id', auth, async (req, res) => {
     } catch(error) {
         console.log(error);
     }
-})
+})*/
 
 /*router.delete('/:id', auth, async (req, res) => {
     const id = req.params.id;
@@ -93,10 +95,6 @@ router.put('/:id', auth, async (req, res) => {
             }
         } 
     }
-})*/
-
-/*router.post('/:id', async (req, res) => {
-    const id = req.params.id;
 })*/
 
 module.exports=router;

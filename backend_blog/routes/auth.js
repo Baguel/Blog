@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
+//Enregistrer un utilisateur lambda
 router.post("/register", async (req, res) => {
     const { surname, firstname, username, email, password } = req.body;
     let hash = await bcrypt.hash(password, 10);
@@ -22,6 +23,7 @@ router.post("/register", async (req, res) => {
     }
 })
 
+//Connecter un utilisateur lambda
 router.post('/login', async (req, res) => {
     const {email, password} = req.body;
     try {
