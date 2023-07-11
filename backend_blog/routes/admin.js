@@ -53,7 +53,7 @@ router.get('/admin', async(req, res) => {
     }
 })
 
-//Mettre a jour les infos du compte plus précisement le mot de passe
+//Mettre a jour les infos du compte connecter plus précisement le mot de passe
 router.put('/:id', async (req, res) => {
     const id = req.params.id;
     try {

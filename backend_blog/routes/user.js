@@ -65,7 +65,7 @@ router.put('/:id', auth, async (req, res) => {
     }
 })
 
-//supprimer le compte de l'utilisateur connecter
+//supprimer le compte de l'utilisateur connecter, il reste un petit details a ce niveau 
 router.delete('/:id', auth, async (req, res) => {
     const id = req.params.id;
     if (!id) {

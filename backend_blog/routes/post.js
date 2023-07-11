@@ -47,6 +47,7 @@ router.get('/post/user', auth, async(req, res) => {
     }
 })
 
+//Pour mettre a jour le status du poste
 /*router.put('/:id', auth, async (req, res) => {
     const id = req.params.id;
     try {
@@ -73,28 +74,29 @@ router.get('/post/user', auth, async(req, res) => {
     }
 })*/
 
-/*router.delete('/:id', auth, async (req, res) => {
+//Pour supprimer un post mais je me demande si cela est vraiment utile
+router.delete('/:id', auth, async (req, res) => {
     const id = req.params.id;
     if (!id) {
         res.status(401).send("id est requis");
     } else {
-        const userId = id.toString();
-        const userfind = await user.findById({_id : new ObjectId(userId)});
-        if (userfind.id !== req.user._id) {
-            res.status(200).send("cet compte ne vous appartient pas!!");
+        const postId = id.toString();
+        const postfind = await post.findById({_id : new ObjectId(postId)});
+        if (postfind.id !== req.user._id) {
+            res.status(200).send("cet post ne vous appartient pas!!");
         } else {
-            if (req.user.id === "true") {
+            if (req.user.locked === "true") {
                 res.status(401).send("Utilisateur bloqué");
             } else {
-                await user.findByIdAndDelete({_id : new ObjectId(userId)});
+                await post.findByIdAndDelete({_id : new ObjectId(postId)});
                     try {
-                        res.status(200).send("utilisateur supprimé avec sucess");
+                        res.status(200).send("post supprimé avec sucess");
                     } catch(err) {
                         res.status(401).send("probleme de suppression");
                     }
             }
         } 
     }
-})*/
+})
 
 module.exports=router;
