@@ -4,9 +4,11 @@ const authRoutes = require('../backend_blog/routes/auth');
 const userRoutes = require('../backend_blog/routes/user');
 const adminRoutes = require('../backend_blog/routes/admin');
 const postRoutes = require('../backend_blog/routes/post');
+const commentaireRoutes = require('../backend_blog/routes/commentaire');
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const commentaire = require('./model/commentaire');
 const app = express();
 
 app.use(express.urlencoded({ extended: true }))
@@ -17,6 +19,7 @@ app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/post", postRoutes);
+app.use("/commentaire", commentaireRoutes);
 
 mongoose.connect(process.env.MONGO_PATH,
     {useNewUrlParser: true,

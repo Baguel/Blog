@@ -12,4 +12,4 @@ const commentaireModel = new mongoose.Schema({
     }   
 })
 
-module.exports = mongoose.model("rubrique", rubriqueModel);
+module.exports = mongoose.model("commentaire", commentaireModel);
