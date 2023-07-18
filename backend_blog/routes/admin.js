@@ -1,8 +1,13 @@
 const router = require('express').Router();
 const admin = require('../model/admin.js');
+const user = require('../model/user.js');
+const post = require('../model/post.js');
+const auth = require('../middleware/adminauth.js');
 const bcrypt = require('bcrypt');
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const { ObjectId } = require('bson');
+const mongoose = require('mongoose');
 
 //Pour enregistrer un admin
 router.post("/register", async (req, res) => {
@@ -44,17 +49,27 @@ router.post('/login', async (req, res) => {
 })
 
 //Voir tout les admins
-router.get('/admin', async(req, res) => {
+router.get('/admin', auth, async(req, res) => {
     try {
-        const data = admin.find({});
+        const data = await admin.find({});
         res.status(200).send(data);
     } catch(error) {
         res.status(400).send("il y a rien");
     }
 })
 
+//voir tout les utilisateurs
+router.get('/admin/users', /*auth,*/ async(req, res) => {
+    try {
+        const data = await user.find({});
+        res.status(200).send(data);
+    } catch(error) {
+        res.status(400).send("il y a aucun utilisateur");
+    }
+})
+
 //Mettre a jour les infos du compte connecter plus précisement le mot de passe
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
     const id = req.params.id;
     try {
         if (!id) {
@@ -73,5 +88,78 @@ router.put('/:id', async (req, res) => {
         console.log(error);
     }
 })
+
+//Pour suprimer un utilisateur lambda
+router.delete('/:id', auth, async (req, res) => {
+    const id = req.params.id;
+    if (!id) {
+        res.status(401).send("id est requis");
+    } else {
+        const userId = id.toString();
+        const userfind = await user.findById({_id : new ObjectId(userId)});
+        if (!userfind) {
+            res.status(200).send("cet utilisateur n'existe pas");
+        } else {
+                await user.findByIdAndDelete({_id : new ObjectId(userId)});
+                try {
+                    res.status(200).send("utilisateur supprimé avec sucess");
+                } catch(err) {
+                    res.status(401).send("probleme de suppression");
+            }
+        } 
+    }
+})
+
+//pour bloquer un utilisateur
+router.put('/:id', auth, async (req, res) => {
+    const id = req.params.id;
+    try {
+        if (!id) {
+            res.status(401).send("id est requis");
+        } else {
+            const update = await user.findByIdAndUpdate(id, {locked: "true"}).then(data => {
+                res.status(200).send('utilisateur bloqué avec success');
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        }
+    } catch(error) {
+        console.log(error);
+    }
+})
+
+//Pour afficher tout les posts
+router.get('/admin/post', /*auth,*/ async(req, res) => {
+    try {
+        const data = await post.find({});
+        res.status(200).send(data);
+    } catch(error) {
+        res.status(400).send("il y a aucun post");
+    }
+})
+
+//Pour suprimer un post via id(a revoir dans un instant)
+/*router.delete('/post/:id', /*auth,*/ /*async (req, res) => {
+    const id = req.params.id;
+    if (!id) {
+        res.status(401).send("id est requis");
+    } else {
+        const postId = id.toString();
+        const postfind = await post.findById({_id : new ObjectId(postId)});
+        if (!postfind) {
+            res.status(200).send("cet post n'existe pas");
+        } else {
+                const data = await user.findById({_id : new ObjectId(postId)});
+                try {
+                    console.log(postId);
+                    res.status(200).send(data);
+                } catch(err) {
+                    console.log(err);
+                    res.status(401).send("probleme de suppression");
+            }
+        } 
+    }
+})*/
 
 module.exports=router;

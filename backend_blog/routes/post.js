@@ -47,7 +47,7 @@ router.get('/post/user', auth, async(req, res) => {
     }
 })
 
-//Pour mettre a jour le status du poste
+//Pour mettre a jour le status du post
 /*router.put('/:id', auth, async (req, res) => {
     const id = req.params.id;
     try {
