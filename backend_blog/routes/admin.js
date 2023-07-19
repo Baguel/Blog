@@ -161,15 +161,22 @@ router.delete('/post/:id', async (req, res) => {
     }
   });
 
-  //Pour rechercher une categorie de post(python, C, C++, C# ...etc)
-  //je suis légerement bloque mes amis
-  /*router.get('/search', async (req, res) => {
+//pour mettre a jour le status d'un post
+router.put('/:id', auth, async (req, res) => {
     const id = req.params.id;
-    if(!id) {
-        res.status(401).send("id est requis");
-    } else {
-        const postId = id.toString();
+    try {
+        if (!id) {
+            res.status(401).send("id est requis");
+        } else {
+            const update = await post.findByIdAndUpdate(id, {status: "terminé"}).then(data => {
+                res.status(200).send('status du post changé avec success');
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        }
+    } catch(error) {
+        console.log(error);
     }
-  })*/
-
+})
 module.exports=router;
