@@ -59,7 +59,7 @@ router.get('/admin', auth, async(req, res) => {
 })
 
 //voir tout les utilisateurs
-router.get('/admin/users', /*auth,*/ async(req, res) => {
+router.get('/admin/users', auth, async(req, res) => {
     try {
         const data = await user.find({});
         res.status(200).send(data);
@@ -130,7 +130,7 @@ router.put('/:id', auth, async (req, res) => {
 })
 
 //Pour afficher tout les posts
-router.get('/admin/post', /*auth,*/ async(req, res) => {
+router.get('/admin/post', auth, async(req, res) => {
     try {
         const data = await post.find({});
         res.status(200).send(data);
@@ -139,27 +139,36 @@ router.get('/admin/post', /*auth,*/ async(req, res) => {
     }
 })
 
-//Pour suprimer un post via id(a revoir dans un instant)
-/*router.delete('/post/:id', /*auth,*/ /*async (req, res) => {
+// Route pour supprimer un post
+router.delete('/post/:id', async (req, res) => {
     const id = req.params.id;
     if (!id) {
+      res.status(401).send("id est requis");
+    } else {
+      const postId = id.toString();
+      const postfind = await post.findById({_id : new ObjectId(postId)});
+      if (!postfind) {
+        res.status(404).send("cet post n'existe pas");
+      } else {
+        try {
+          await post.deleteOne({_id: new ObjectId(postId)});
+          res.status(200).send("post supprimé avec succès");
+        } catch(err) {
+          console.log(err);
+          res.status(401).send("problème de suppression du post");
+        }
+      } 
+    }
+  });
+
+  //Pour rechercher une categorie de post(python, C, C++, C# ...etc)
+  router.get('/search', async (req, res) => {
+    const id = req.params.id;
+    if(!id) {
         res.status(401).send("id est requis");
     } else {
         const postId = id.toString();
-        const postfind = await post.findById({_id : new ObjectId(postId)});
-        if (!postfind) {
-            res.status(200).send("cet post n'existe pas");
-        } else {
-                const data = await user.findById({_id : new ObjectId(postId)});
-                try {
-                    console.log(postId);
-                    res.status(200).send(data);
-                } catch(err) {
-                    console.log(err);
-                    res.status(401).send("probleme de suppression");
-            }
-        } 
     }
-})*/
+  })
 
 module.exports=router;
