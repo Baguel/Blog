@@ -162,13 +162,14 @@ router.delete('/post/:id', async (req, res) => {
   });
 
   //Pour rechercher une categorie de post(python, C, C++, C# ...etc)
-  router.get('/search', async (req, res) => {
+  //je suis légerement bloque mes amis
+  /*router.get('/search', async (req, res) => {
     const id = req.params.id;
     if(!id) {
         res.status(401).send("id est requis");
     } else {
         const postId = id.toString();
     }
-  })
+  })*/
 
 module.exports=router;
